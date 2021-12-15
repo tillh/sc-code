@@ -12,7 +12,11 @@ function App() {
             <section
                 className={'w-4/12 overflow-auto p-4'}
                 data-testid={'person-list-container'}>
-                <PersonsList persons={listOfPersons} onSelectPerson={setSelectedPerson}/>
+                <PersonsList
+                    persons={listOfPersons}
+                    onSelectPerson={setSelectedPerson}
+                    selectedPerson={selectedPerson}
+                />
             </section>
 
             <section
