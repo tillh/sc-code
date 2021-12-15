@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
+import { v4 } from 'uuid';
 import { PersonDetail } from './feature/person-detail/PersonDetail';
 import { PersonForm } from './feature/person-form/PersonForm';
 import { PersonsList } from './feature/persons-list/PersonsList';
-import { Person } from './model/person.model';
-import { listOfPersons } from './test-utils/mock-data';
+import { initialPhoneBookData } from './feature/phone-book/initialPhoneBookData';
+import { Person, PersonFormData } from './model/person.model';
+import { phoneBookReducer } from './feature/phone-book/phoneBook.reducer';
 
 type ViewMode = 'ADD' | 'VIEW';
 
 function App() {
     const [viewMode, setViewMode] = useState<ViewMode>('VIEW');
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+    const [phoneBook, dispatch] = useReducer(phoneBookReducer, { entries: initialPhoneBookData });
 
     const showAddPersonView = () => {
         setSelectedPerson(null);
@@ -19,6 +22,16 @@ function App() {
     const showPersonDetails = (person: Person) => {
         setViewMode('VIEW');
         setSelectedPerson(person);
+    };
+
+    const handleSavePerson = (data: PersonFormData) => {
+        const newPerson: Person = {
+            ...data,
+            id: v4()
+        };
+        dispatch({ type: 'ADD', payload: newPerson });
+        setViewMode('VIEW');
+        setSelectedPerson(newPerson);
     };
 
     return (
@@ -33,7 +46,7 @@ function App() {
 
                 <div className={'overflow-auto flex-1'}>
                     <PersonsList
-                        persons={listOfPersons}
+                        persons={phoneBook.entries}
                         onSelectPerson={showPersonDetails}
                         selectedPerson={selectedPerson}
                     />
@@ -44,8 +57,7 @@ function App() {
                 className={'w-8/12 p-4'}
                 data-testid={'person-detail-container'}>
                 {viewMode === 'VIEW' ? <PersonDetail person={selectedPerson}/> : null}
-                {viewMode === 'ADD' ?
-                    <PersonForm onSubmit={(data) => console.log(data)} onCancel={showDefaultView}/> : null}
+                {viewMode === 'ADD' ? <PersonForm onSubmit={handleSavePerson} onCancel={showDefaultView}/> : null}
             </section>
         </main>
     );
