@@ -216,8 +216,8 @@ $$;
 ```sql
 select u.name, string_agg(distinct p.name, ', ') as permissions
     from users as u
-        join users_permission as up on u.id = up.user_id
-        join clients_permission cp on u.client_id = cp.client_id
+         full join users_permission as up on u.id = up.user_id
+         full join clients_permission cp on u.client_id = cp.client_id
         join permissions as p on up.permission_id = p.id or cp.permission_id = p.id
 where u.name = 'User 1'
 group by u.name;
