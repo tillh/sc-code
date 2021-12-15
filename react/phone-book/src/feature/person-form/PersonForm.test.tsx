@@ -30,9 +30,10 @@ describe('PersonForm', () => {
 
         await waitFor(() => expect(onSubmitSpy).toHaveBeenCalledTimes(1));
         expect(onSubmitSpy).toHaveBeenCalledWith({
-            'firstName': 'Max',
-            'lastName': 'Mustermann',
-            'phoneNumber': '123456789'
+            id: '',
+            firstName: 'Max',
+            lastName: 'Mustermann',
+            phoneNumber: '123456789'
         }, expect.anything());
     });
 });

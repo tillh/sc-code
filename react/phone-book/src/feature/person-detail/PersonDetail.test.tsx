@@ -4,19 +4,19 @@ import { PersonDetail } from './PersonDetail';
 
 describe('PersonDetail', () => {
     test('should render person name', () => {
-        render(<PersonDetail person={aPerson}/>);
+        render(<PersonDetail person={aPerson} onDelete={jest.fn()} onEdit={jest.fn()}/>);
 
         expect(screen.getByRole('heading')).toHaveTextContent('Max Mustermann');
     });
 
     test('should render phone number', () => {
-        render(<PersonDetail person={aPerson}/>);
+        render(<PersonDetail person={aPerson} onDelete={jest.fn()} onEdit={jest.fn()}/>);
 
         expect(screen.getByTestId('phone-number')).toHaveTextContent('+49 170 12345678');
     });
 
     test('should render no person selected when person is not defined', () => {
-        render(<PersonDetail person={null}/>);
+        render(<PersonDetail person={null} onDelete={jest.fn()} onEdit={jest.fn()}/>);
 
         expect(screen.getByRole('heading')).toHaveTextContent('No person selected');
     });

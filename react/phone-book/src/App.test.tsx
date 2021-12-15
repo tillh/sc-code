@@ -38,4 +38,29 @@ describe('App', () => {
 
         await waitFor(() => expect(screen.getByTestId('person-list-container')).toHaveTextContent('Max Mustermann'));
     });
+
+    test('should update a person', async () => {
+        render(<App/>);
+
+        userEvent.click(screen.getByText(/firstname 0/i));
+        userEvent.click(screen.getByTestId('edit-person'));
+        screen.getByTestId('person-form');
+
+        userEvent.type(screen.getByRole('textbox', { name: /firstname/i }), '{selectall}Firstname_Edit');
+        userEvent.click(screen.getByLabelText(/save person/i));
+
+        await waitFor(() => expect(screen.getByTestId('person-list-container')).toHaveTextContent('Firstname_Edit'));
+        expect(screen.getByTestId('person-list-container')).not.toHaveTextContent('Firstname 0');
+    });
+
+    test('should delete a person', async () => {
+        render(<App/>);
+
+        expect(screen.getByTestId('person-list-container')).toHaveTextContent('Firstname 0');
+
+        userEvent.click(screen.getByText(/firstname 0/i));
+        userEvent.click(screen.getByTestId('delete-person'));
+
+        await waitFor(() => expect(screen.getByTestId('person-list-container')).not.toHaveTextContent('Firstname 0'));
+    });
 });

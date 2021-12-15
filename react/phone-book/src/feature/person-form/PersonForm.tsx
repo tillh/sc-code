@@ -2,22 +2,22 @@ import { useForm } from 'react-hook-form';
 import { Person, PersonFormData } from '../../model/person.model';
 
 type PersonFormProps = {
-    initialData?: Person;
+    initialData?: Person | null;
     onSubmit(personData: PersonFormData): void;
     onCancel(): void;
 }
 
+const defaultValues: PersonFormData = { id: '', firstName: '', lastName: '', phoneNumber: '' };
 
 export function PersonForm(props: PersonFormProps) {
     const { initialData, onSubmit, onCancel } = props;
 
-    const {
-        register,
-        handleSubmit
-    } = useForm<PersonFormData>({ defaultValues: initialData });
+    const { register, handleSubmit } = useForm<PersonFormData>({ defaultValues: initialData ?? defaultValues });
 
     return (
         <form data-testid={'person-form'} onSubmit={handleSubmit(onSubmit)} noValidate>
+            <input type="hidden" {...register('id')}/>
+
             <div className={'mb-4'}>
                 <label className={'label'} htmlFor="first-name">
                     Firstname

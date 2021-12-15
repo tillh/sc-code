@@ -4,10 +4,10 @@ import { PersonDetail } from './feature/person-detail/PersonDetail';
 import { PersonForm } from './feature/person-form/PersonForm';
 import { PersonsList } from './feature/persons-list/PersonsList';
 import { initialPhoneBookData } from './feature/phone-book/initialPhoneBookData';
-import { Person, PersonFormData } from './model/person.model';
 import { phoneBookReducer } from './feature/phone-book/phoneBook.reducer';
+import { Person, PersonFormData } from './model/person.model';
 
-type ViewMode = 'ADD' | 'VIEW';
+type ViewMode = 'ADD_OR_EDIT' | 'VIEW';
 
 function App() {
     const [viewMode, setViewMode] = useState<ViewMode>('VIEW');
@@ -16,22 +16,31 @@ function App() {
 
     const showAddPersonView = () => {
         setSelectedPerson(null);
-        setViewMode('ADD');
+        setViewMode('ADD_OR_EDIT');
     };
     const showDefaultView = () => setViewMode('VIEW');
     const showPersonDetails = (person: Person) => {
         setViewMode('VIEW');
         setSelectedPerson(person);
     };
+    const showEditView = () => setViewMode('ADD_OR_EDIT');
+
 
     const handleSavePerson = (data: PersonFormData) => {
-        const newPerson: Person = {
-            ...data,
-            id: v4()
-        };
-        dispatch({ type: 'ADD', payload: newPerson });
+        if (data.id) {
+            dispatch({ type: 'UPDATE', payload: data });
+            setSelectedPerson(data);
+        } else {
+            const newPerson: Person = { ...data, id: v4() };
+            dispatch({ type: 'ADD', payload: newPerson });
+            setSelectedPerson(newPerson);
+        }
         setViewMode('VIEW');
-        setSelectedPerson(newPerson);
+    };
+
+    const handleDelete = (person: Person) => {
+        setSelectedPerson(null);
+        dispatch({ type: 'DELETE', payload: person.id });
     };
 
     return (
@@ -56,8 +65,19 @@ function App() {
             <section
                 className={'w-8/12 p-4'}
                 data-testid={'person-detail-container'}>
-                {viewMode === 'VIEW' ? <PersonDetail person={selectedPerson}/> : null}
-                {viewMode === 'ADD' ? <PersonForm onSubmit={handleSavePerson} onCancel={showDefaultView}/> : null}
+                {viewMode === 'VIEW' ?
+                    <PersonDetail
+                        person={selectedPerson}
+                        onDelete={handleDelete}
+                        onEdit={showEditView}
+                    /> : null}
+
+                {viewMode === 'ADD_OR_EDIT' ?
+                    <PersonForm
+                        initialData={selectedPerson}
+                        onSubmit={handleSavePerson}
+                        onCancel={showDefaultView}
+                    /> : null}
             </section>
         </main>
     );
