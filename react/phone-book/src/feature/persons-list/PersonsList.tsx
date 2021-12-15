@@ -10,7 +10,7 @@ export function PersonsList(props: PersonsListProps) {
     return (
         <ul>
             {persons.map((person) =>
-                <li key={person.id}>
+                <li key={person.id} className={'p-2 hover:bg-slate-200'}>
                     {person.firstName} {person.lastName}
                 </li>
             )}
