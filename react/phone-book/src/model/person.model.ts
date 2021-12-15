@@ -5,5 +5,5 @@ export type Person = NewPerson & {
 export type NewPerson = {
     firstName?: string;
     lastName?: string;
-    phone?: string;
+    phoneNumber?: string;
 }
